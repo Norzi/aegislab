@@ -1,0 +1,19 @@
+# Open WebUI: chat frontend for local LLMs.
+# The model server (llama.cpp llama-server) runs on a separate machine and exposes an OpenAI-compatible API on port 8899.
+services:
+  open-webui:
+    image: openwebui/open-webui
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      - OPENAI_API_BASE_URL=http://${LLM_HOST_IP}:${LLM_PORT:-8899}/v1
+      - OPENAI_API_KEY=${LLM_API_KEY}
+      - ENABLE_OLLAMA_API=false
+      - WEBUI_AUTH=true
+
+volumes:
+  open-webui-data:

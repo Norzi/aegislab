@@ -1,0 +1,44 @@
+# Download + media stack: aria2 (downloader), AriaNg (web UI), Jellyfin (media server)
+# This was my first compose file and I kept the three services together.
+# Copy .env.example to .env and set a strong RPC_SECRET before starting.
+services:
+  aria2:
+    image: p3terx/aria2-pro:latest
+    container_name: aria2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - RPC_SECRET=${RPC_SECRET}
+      - RPC_PORT=6800
+      - LISTEN_PORT=6888
+    volumes:
+      - /opt/aria2/config:/config
+      - /opt/downloads/aria2:/downloads
+      - /opt/media:/media
+    ports:
+      - 6800:6800
+      - 6888:6888
+      - 6888:6888/udp
+    restart: unless-stopped
+
+  ariang:
+    image: p3terx/ariang:latest
+    container_name: ariang
+    ports:
+      - 6880:6880
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    volumes:
+      - /opt/jellyfin/config:/config
+      - /opt/jellyfin/cache:/cache
+      # /opt/media is shared with aria2, so Jellyfin sees everything that gets downloaded
+      - /opt/media:/media
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+    # Transcoding is disabled in the Jellyfin settings (Dashboard -> Playback)
+    # to keep CPU/RAM usage low on weak hardware.

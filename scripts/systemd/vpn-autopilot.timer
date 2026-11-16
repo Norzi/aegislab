@@ -1,0 +1,11 @@
+[Unit]
+Description=Run vpn-autopilot every 1-2 hours
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=90min
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

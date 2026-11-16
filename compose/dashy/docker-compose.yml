@@ -1,0 +1,21 @@
+# Dashy: dashboard with live status dots for every service.
+# The link list is in /opt/dashy/conf.yml on the host (mounted below, not published here).
+services:
+  dashy:
+    image: lissy93/dashy:latest
+    container_name: dashy
+    ports:
+      - '4000:8080'
+    volumes:
+      - /opt/dashy/conf.yml:/app/public/conf.yml
+    restart: unless-stopped
+    user: node
+    working_dir: /app
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node services/healthcheck.js
+      interval: 300s
+      timeout: 10s
+      retries: 3
+      start_period: 20s

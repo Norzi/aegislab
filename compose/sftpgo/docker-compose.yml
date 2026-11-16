@@ -1,0 +1,20 @@
+# SFTPGo: web file manager + SFTP server (SQLite backend)
+# Ports: 8082 = web admin/client UI, 2022 = SFTP, 8091 = WebDAV/other binding
+services:
+  sftpgo:
+    image: drakkan/sftpgo:latest
+    container_name: sftpgo
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+      - "2022:2022"
+      - "8091:8090"
+    volumes:
+      - ./config:/srv/sftpgo/config
+      - ./data:/srv/sftpgo/data
+      - ./backups:/srv/sftpgo/backups
+      # Shared folder on the host that users can browse
+      - /path/to/shared:/srv/sftpgo/shared:rw
+    environment:
+      SFTPGO_HTTPD__BINDINGS__0__PORT: 8080
+      SFTPGO_DATA_PROVIDER__DRIVER: sqlite

@@ -1,0 +1,11 @@
+[Unit]
+Description=VPN watchdog: end-to-end tunnel check, triggers vpn-autopilot after repeated failures
+After=sing-box.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/python3 /opt/singbox/vpn_watchdog.py
+# view with: journalctl -u vpn-watchdog -f
+StandardOutput=journal
+StandardError=journal

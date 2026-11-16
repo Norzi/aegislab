@@ -1,0 +1,14 @@
+[Unit]
+Description=VPN autopilot: refresh subscription, speed-test nodes, apply fastest
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+# private values (subscription URL, device id, fixed node); see ../autopilot.env.example
+EnvironmentFile=/etc/sing-box/autopilot.env
+ExecStart=/usr/bin/python3 /opt/singbox/vpn_autopilot.py
+# keep stdout/stderr in the journal; view with: journalctl -u vpn-autopilot -f
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,18 @@
+# Dockhand: web UI for managing Docker containers (replaced Portainer)
+# Note: mounting the Docker socket gives this container full control of Docker,
+# so keep it behind a password and never expose it directly to the internet.
+services:
+  dockhand:
+    image: fnsys/dockhand:latest
+    container_name: dockhand
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    group_add:
+      - "999"   # GID of the docker group on the host (check with: getent group docker)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dockhand_data:/app/data
+
+volumes:
+  dockhand_data:
